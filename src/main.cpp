@@ -20,7 +20,7 @@
 #define INDEX_DELAY       0xFD
 
 #define INDEX_SETBR       0xFB
-
+#define BANDRATE          512000
 /*
  * 设置彩灯阵列
  * */
@@ -32,33 +32,27 @@ void LEDtest(void);
 void FillColor(void);
 void setup()
 {
-    Serial.begin(512000);
-    Serial.write(0xAA);
-    pixels.begin();
-    pixels.clear();
-    pixels.setBrightness(20);
-    pixels.setPixelColor(0,0x00);
-    pixels.show();
-    LEDtest();
-
+    Serial.begin(BANDRATE);                       //设置波特率
+    pixels.begin();                                     //启动像素灯
+    pixels.clear();                                     //清空
+    pixels.setBrightness(20);                           //设置初始亮度
+    LEDtest();                                          //测试LED灯
 }
 
-uint16_t LPoint = 0;
-uint8_t  CPoint = 0;
-uint8_t LED_Color[3];
+uint16_t LPoint = 0;             //LED灯指针
+uint8_t  CPoint = 0;             //颜色指针
 
-uint8_t LED_RGB[LED_NUM][3];        //LED数据数组，用来存储LED数据
+uint8_t LED_RGB[LED_NUM][3];      //LED数据数组，用来存储LED数据
 
 void fullFill(uint8_t R, uint8_t G, uint8_t B);
 
-
-void loop()
+void loop()                                         //指令解析
 {
     if(Serial.available())
     {
         uint8_t colorTemp = Serial.read();
         Serial.write(colorTemp);
-        if(colorTemp <= 200)
+        if(colorTemp <= 200)                    //填充数据---同步指令
         {
             LED_RGB[LPoint][CPoint++] = colorTemp;
             if(CPoint==3)
@@ -71,17 +65,17 @@ void loop()
                     FillColor();
                 }
             }
-        } else if (colorTemp==INDEX_ENTER)
+        } else if (colorTemp==INDEX_ENTER)      //解析确定指令---使填充数据生效
         {
             LPoint = 0;
             CPoint = 0;
             FillColor();
-        } else if(colorTemp == INDEX_CLEAR)
+        } else if(colorTemp == INDEX_CLEAR)     //解析清空指令---立即执行
         {
             fullFill(0,0,0);
             pixels.show();
         }
-        else if(colorTemp == INDEX_DELAY)
+        else if(colorTemp == INDEX_DELAY)       //解析延时指令---双字节指令
         {
             while (!Serial.available());
             uint8_t temp = Serial.read();
