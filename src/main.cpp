@@ -18,9 +18,10 @@
 #define INDEX_ENTER       0xFF
 #define INDEX_CLEAR       0xFE
 #define INDEX_DELAY       0xFD
-
+#define INDEX_CONNT       0xFC
 #define INDEX_SETBR       0xFB
-#define BANDRATE          512000
+#define INDEX_RESET       0xFA
+#define BANDRATE          115200
 /*
  * 设置彩灯阵列
  * */
@@ -30,13 +31,20 @@ Adafruit_NeoPixel pixels(LED_NUM,
                          );
 void LEDtest(void);
 void FillColor(void);
+
+void WaitForConnect(void);
+
+
+
 void setup()
 {
     Serial.begin(BANDRATE);                       //设置波特率
     pixels.begin();                                     //启动像素灯
     pixels.clear();                                     //清空
     pixels.setBrightness(20);                           //设置初始亮度
-    LEDtest();                                          //测试LED灯
+    WaitForConnect();
+
+//    LEDtest();                                          //测试LED灯
 }
 
 uint16_t LPoint = 0;             //LED灯指针
@@ -81,6 +89,10 @@ void loop()                                         //指令解析
             uint8_t temp = Serial.read();
             Serial.write(temp);
             delay(temp*10);
+        }
+        else if(colorTemp==INDEX_CONNT)
+        {
+            WaitForConnect();
         }
     }
 
@@ -144,4 +156,30 @@ void fullFill(uint8_t R, uint8_t G, uint8_t B)
         pixels.setPixelColor(i,R,G,B);
     }
     pixels.show();
+}
+
+
+
+
+
+
+/*
+ * 连接函数，用于串口和上位机建立连接
+ * */
+void WaitForConnect(void)
+{
+    while (1)
+    {
+        if(Serial.available())
+        {
+            uint8_t temp = Serial.read();
+            if(temp==INDEX_CONNT)
+            {
+                Serial.write(INDEX_CONNT);
+                delay(10);
+                while (Serial.read()>=0);
+                break;
+            }
+        }
+    }
 }
