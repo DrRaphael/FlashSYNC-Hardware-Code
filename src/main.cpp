@@ -51,7 +51,7 @@ void loop()                                         //指令解析
     if(Serial.available())
     {
         uint8_t colorTemp = Serial.read();
-        Serial.write(colorTemp);
+
         if(colorTemp <= 200)                    //填充数据---同步指令
         {
             LED_RGB[LPoint][CPoint++] = colorTemp;
@@ -89,9 +89,6 @@ void loop()                                         //指令解析
 void LEDtest(void)
 {
     uint16_t NumLED = pixels.numPixels();
-    //库的设计上最多支持100个灯，但是理论上灯的数量是无限制的
-    //为了兼顾兼容性和内存占用，使用16位存储
-    //65536及以后的灯会被忽略
     for (int i = 0; i < NumLED; ++i)
     {
         pixels.setPixelColor(i,0x00);
@@ -133,9 +130,6 @@ void FillColor(void)
                              LED_RGB[i][1],
                              LED_RGB[i][2]
                              );
-//        LED_RGB[i][0] = 0;
-//        LED_RGB[i][1] = 0;
-//        LED_RGB[i][2] = 0;
     }
     pixels.show();
 }
