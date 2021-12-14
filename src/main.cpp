@@ -3,7 +3,7 @@
 #include "ATCommand.h"
 #define TEST_DELAY  10
 #define LED_PIN     4
-#define LED_NUM     12
+#define LED_NUM     60
 
 
 /*
@@ -41,7 +41,7 @@ void setup()
     Serial.begin(BANDRATE);                       //设置波特率
     pixels.begin();                                     //启动像素灯
     pixels.clear();                                     //清空
-    pixels.setBrightness(20);                           //设置初始亮度
+    pixels.setBrightness(200);                           //设置初始亮度
     WaitForConnect();
 
 //    LEDtest();                                          //测试LED灯
