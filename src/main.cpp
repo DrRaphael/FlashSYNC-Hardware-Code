@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "Adafruit_NeoPixel.h"
-#include "ATCommand.h"
+
 #define TEST_DELAY  10
 #define LED_PIN     4
 #define LED_NUM     60

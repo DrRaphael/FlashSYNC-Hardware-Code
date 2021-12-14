@@ -34,5 +34,5 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/ATCommand.cpp src/ATCommand.h src/TTCommand.cpp src/TTCommand.h)
+add_executable(Z_DUMMY_TARGET ${SRC_LIST})
 include_directories("lib")
